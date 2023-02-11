@@ -1,4 +1,4 @@
-# bbs-server
+# bbs-go
 
 ## system structure
 
