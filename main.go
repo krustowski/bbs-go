@@ -91,7 +91,8 @@ func main() {
 	log.Printf(" starting bbs-go telnet service (" + version + ")...")
 
 	shellHandler := telsh.NewShellHandler()
-
+	shellHandler.Prompt = "$ "
+	shellHandler.ExitMessage = "\n\rGoodbye!\n\r"
 	shellHandler.WelcomeMessage = `
     __    __
    / /_  / /_  _____      ____  ____
