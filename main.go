@@ -1,96 +1,28 @@
 package main
 
 import (
-	"github.com/reiver/go-oi"
 	"github.com/reiver/go-telnet"
 	"github.com/reiver/go-telnet/telsh"
 
-	"fmt"
-	"io"
 	"log"
-	//"net"
 	"os"
-	"time"
 )
 
 var (
+	host string
+	port string
 	shellHandler *telsh.ShellHandler = telsh.NewShellHandler()
-	version string = "v0.2.0"
+	version string
 )
 
-func versionHandler(stdin io.ReadCloser, stdout io.WriteCloser, stderr io.WriteCloser, args ...string) error {
-	oi.LongWriteString(stdout, "\n\rbbs-go telnet service")
-	oi.LongWriteString(stdout, "\n\rversion: " + version + "\n\r")
-
-	return nil
-}
-
-func versionProducer(ctx telnet.Context, name string, args ...string) telsh.Handler{
-	return telsh.PromoteHandlerFunc(versionHandler)
-}
-
-
-func fiveHandler(stdin io.ReadCloser, stdout io.WriteCloser, stderr io.WriteCloser, args ...string) error {
-	oi.LongWriteString(stdout, "The number FIVE looks like this: 5\r\n")
-
-	return nil
-}
-
-func fiveProducer(ctx telnet.Context, name string, args ...string) telsh.Handler{
-	return telsh.PromoteHandlerFunc(fiveHandler)
-}
-
-func danceHandler(stdin io.ReadCloser, stdout io.WriteCloser, stderr io.WriteCloser, args ...string) error {
-	for i:=0; i<20; i++ {
-		oi.LongWriteString(stdout, "\r⠋")
-		time.Sleep(50*time.Millisecond)
-
-		oi.LongWriteString(stdout, "\r⠙")
-		time.Sleep(50*time.Millisecond)
-
-		oi.LongWriteString(stdout, "\r⠹")
-		time.Sleep(50*time.Millisecond)
-
-		oi.LongWriteString(stdout, "\r⠸")
-		time.Sleep(50*time.Millisecond)
-
-		oi.LongWriteString(stdout, "\r⠼")
-		time.Sleep(50*time.Millisecond)
-
-		oi.LongWriteString(stdout, "\r⠴")
-		time.Sleep(50*time.Millisecond)
-
-		oi.LongWriteString(stdout, "\r⠦")
-		time.Sleep(50*time.Millisecond)
-
-		oi.LongWriteString(stdout, "\r⠧")
-		time.Sleep(50*time.Millisecond)
-
-		oi.LongWriteString(stdout, "\r⠇")
-		time.Sleep(50*time.Millisecond)
-
-		oi.LongWriteString(stdout, "\r⠏")
-		time.Sleep(50*time.Millisecond)
-	}
-	oi.LongWriteString(stdout, "\r \r\n")
-
-	return nil
-}
-
-func danceProducer(ctx telnet.Context, name string, args ...string) telsh.Handler {
-	return telsh.PromoteHandlerFunc(danceHandler)
-}
-
-
 func main() {
-	var addr string = "bbs.savla.int:5555"
-
-	if os.Getenv("PROJECT_VERSION") != "" {
-		version = os.Getenv("PROJECT_VERSION")
-	}
+	host = os.Getenv("LISTEN_ADDR")
+	port = os.Getenv("LISTEN_PORT")
+	version = os.Getenv("PROJECT_VERSION")
 
 	log.Printf(" starting bbs-go telnet service (" + version + ")...")
 
+	// override defaults
 	shellHandler.Prompt = "$ "
 	shellHandler.ExitMessage = "\n\rGoodbye!\n\r"
 	shellHandler.WelcomeMessage = `
@@ -101,30 +33,22 @@ func main() {
 /_.___/_.___/____/      \__, /\____/
                        /____/
 
-savla-dev bbs-go telnet service
-telnet bbs.savla.int 5555
+savla-dev bbs-go telnet service (` + version + `)
+telnet ` + host + ` ` + port + `
 
 `
+	log.Printf(shellHandler.WelcomeMessage)
 
-	fmt.Printf(shellHandler.WelcomeMessage)
+	// loop over commands from commands.go
+	for _, cmd := range cmds {
+		commandProducer := telsh.ProducerFunc(cmd.producer)
 
-	// Register the "help" command.
-	commandName	:= "help"
-	shellHandler.Register(commandName, telsh.Help(shellHandler))
+		shellHandler.Register(cmd.name, telsh.ProducerFunc(commandProducer))
+	}
 
-	// Register the "five" command.
-	commandName     = "five"
-	commandProducer := telsh.ProducerFunc(fiveProducer)
-	shellHandler.Register(commandName, commandProducer)
-
-	// Register the "dance" command.
-	commandName      = "dance"
-	commandProducer  = telsh.ProducerFunc(danceProducer)
-	shellHandler.Register(commandName, commandProducer)
-	shellHandler.Register("dance", telsh.ProducerFunc(danceProducer))
-
+	// construct a server
 	server := &telnet.Server{
-		Addr: addr,
+		Addr: host + ":" + port,
 		Handler: shellHandler,
 		Logger: logger{},
 	}
@@ -134,5 +58,4 @@ telnet bbs.savla.int 5555
 		panic(err)
 	}
 }
-
 

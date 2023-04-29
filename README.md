@@ -1,4 +1,4 @@
-# bbs-go
+# bbs-go (go 1.20)
 
 simple implementation of go-telnet server to a BBS service
 
@@ -15,14 +15,22 @@ telnet bbs.savla.int 5555
 
 ```
 
+## build and run
+
+```
+# copy example dotenv file
+cp .env.example .env
+
+# edit some vars
+vim .env
+
+# apply settings, build the binary and run it with env vars exported
+make run
+```
+
 ## system structure
 
 + message boards
-+ chat rooms
 + TUI forums
 + online games
 + user administration 
-
-## dependencies
-
-+ https://github.com/charmbracelet/bubbletea
