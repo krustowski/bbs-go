@@ -1,111 +1,107 @@
 package main
 
-import (
-	"fmt"
-	"os"
 
-	tea "github.com/charmbracelet/bubbletea"
+import (
+	"github.com/reiver/go-oi"
+	"github.com/reiver/go-telnet"
+	"github.com/reiver/go-telnet/telsh"
+
+	"io"
+	"time"
 )
 
-type model struct {
-	choices  []string
-	cursor   int
-	selected map[int]struct{}
-}
 
-func initialModel() model {
-	return model{
-		// Our to-do list is a grocery list
-		choices: []string{"Buy carrots", "Buy celery", "Buy kohlrabi"},
 
-		// A map which indicates which choices are selected. We're using
-		// the  map like a mathematical set. The keys refer to the indexes
-		// of the `choices` slice, above.
-		selected: make(map[int]struct{}),
-	}
-}
+func fiveHandler(stdin io.ReadCloser, stdout io.WriteCloser, stderr io.WriteCloser, args ...string) error {
+	oi.LongWriteString(stdout, "The number FIVE looks like this: 5\r\n")
 
-func (m model) Init() tea.Cmd {
-	// Just return `nil`, which means "no I/O right now, please."
 	return nil
 }
 
-func (m model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
-	switch msg := msg.(type) {
-
-	// Is it a key press?
-	case tea.KeyMsg:
-
-		// Cool, what was the actual key pressed?
-		switch msg.String() {
-
-		// These keys should exit the program.
-		case "ctrl+c", "q":
-			return m, tea.Quit
-
-		// The "up" and "k" keys move the cursor up
-		case "up", "k":
-			if m.cursor > 0 {
-				m.cursor--
-			}
-
-		// The "down" and "j" keys move the cursor down
-		case "down", "j":
-			if m.cursor < len(m.choices)-1 {
-				m.cursor++
-			}
-
-		// The "enter" key and the spacebar (a literal space) toggle
-		// the selected state for the item that the cursor is pointing at.
-		case "enter", " ":
-			_, ok := m.selected[m.cursor]
-			if ok {
-				delete(m.selected, m.cursor)
-			} else {
-				m.selected[m.cursor] = struct{}{}
-			}
-		}
-	}
-
-	// Return the updated model to the Bubble Tea runtime for processing.
-	// Note that we're not returning a command.
-	return m, nil
+func fiveProducer(ctx telnet.Context, name string, args ...string) telsh.Handler{
+	return telsh.PromoteHandlerFunc(fiveHandler)
 }
 
-func (m model) View() string {
-	// The header
-	s := "What should we buy at the market?\n\n"
 
-	// Iterate over our choices
-	for i, choice := range m.choices {
 
-		// Is the cursor pointing at this choice?
-		cursor := " " // no cursor
-		if m.cursor == i {
-			cursor = ">" // cursor!
-		}
+func danceHandler(stdin io.ReadCloser, stdout io.WriteCloser, stderr io.WriteCloser, args ...string) error {
+	for i:=0; i<20; i++ {
+		oi.LongWriteString(stdout, "\r⠋")
+		time.Sleep(50*time.Millisecond)
 
-		// Is this choice selected?
-		checked := " " // not selected
-		if _, ok := m.selected[i]; ok {
-			checked = "x" // selected!
-		}
+		oi.LongWriteString(stdout, "\r⠙")
+		time.Sleep(50*time.Millisecond)
 
-		// Render the row
-		s += fmt.Sprintf("%s [%s] %s\n", cursor, checked, choice)
+		oi.LongWriteString(stdout, "\r⠹")
+		time.Sleep(50*time.Millisecond)
+
+		oi.LongWriteString(stdout, "\r⠸")
+		time.Sleep(50*time.Millisecond)
+
+		oi.LongWriteString(stdout, "\r⠼")
+		time.Sleep(50*time.Millisecond)
+
+		oi.LongWriteString(stdout, "\r⠴")
+		time.Sleep(50*time.Millisecond)
+
+		oi.LongWriteString(stdout, "\r⠦")
+		time.Sleep(50*time.Millisecond)
+
+		oi.LongWriteString(stdout, "\r⠧")
+		time.Sleep(50*time.Millisecond)
+
+		oi.LongWriteString(stdout, "\r⠇")
+		time.Sleep(50*time.Millisecond)
+
+		oi.LongWriteString(stdout, "\r⠏")
+		time.Sleep(50*time.Millisecond)
 	}
+	oi.LongWriteString(stdout, "\r \r\n")
 
-	// The footer
-	s += "\nPress q to quit.\n"
-
-	// Send the UI for rendering
-	return s
+	return nil
 }
+
+func danceProducer(ctx telnet.Context, name string, args ...string) telsh.Handler{
+
+	return telsh.PromoteHandlerFunc(danceHandler)
+}
+
 
 func main() {
-	p := tea.NewProgram(initialModel())
-	if _, err := p.Run(); err != nil {
-		fmt.Printf("Alas, there's been an error: %v", err)
-		os.Exit(1)
+
+	shellHandler := telsh.NewShellHandler()
+
+	shellHandler.WelcomeMessage = `
+ __          __ ______  _        _____   ____   __  __  ______ 
+ \ \        / /|  ____|| |      / ____| / __ \ |  \/  ||  ____|
+  \ \  /\  / / | |__   | |     | |     | |  | || \  / || |__   
+   \ \/  \/ /  |  __|  | |     | |     | |  | || |\/| ||  __|  
+    \  /\  /   | |____ | |____ | |____ | |__| || |  | || |____ 
+     \/  \/    |______||______| \_____| \____/ |_|  |_||______|
+
+`
+
+
+	// Register the "five" command.
+	commandName     := "five"
+	commandProducer := telsh.ProducerFunc(fiveProducer)
+
+	shellHandler.Register(commandName, commandProducer)
+
+
+
+	// Register the "dance" command.
+	commandName      = "dance"
+	commandProducer  = telsh.ProducerFunc(danceProducer)
+
+	shellHandler.Register(commandName, commandProducer)
+
+
+
+	shellHandler.Register("dance", telsh.ProducerFunc(danceProducer))
+
+	addr := ":5555"
+	if err := telnet.ListenAndServe(addr, shellHandler); nil != err {
+		panic(err)
 	}
 }
