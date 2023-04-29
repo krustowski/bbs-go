@@ -8,13 +8,14 @@ import (
 	"fmt"
 	"io"
 	"log"
+	//"net"
 	"os"
 	"time"
 )
 
 var (
 	shellHandler *telsh.ShellHandler = telsh.NewShellHandler()
-	version string = "v0.1.2"
+	version string = "v0.2.0"
 )
 
 func versionHandler(stdin io.ReadCloser, stdout io.WriteCloser, stderr io.WriteCloser, args ...string) error {
@@ -90,7 +91,6 @@ func main() {
 
 	log.Printf(" starting bbs-go telnet service (" + version + ")...")
 
-	shellHandler := telsh.NewShellHandler()
 	shellHandler.Prompt = "$ "
 	shellHandler.ExitMessage = "\n\rGoodbye!\n\r"
 	shellHandler.WelcomeMessage = `
@@ -126,6 +126,7 @@ telnet bbs.savla.int 5555
 	server := &telnet.Server{
 		Addr: addr,
 		Handler: shellHandler,
+		Logger: logger{},
 	}
 
 	// serve the telnet service
@@ -133,3 +134,5 @@ telnet bbs.savla.int 5555
 		panic(err)
 	}
 }
+
+
