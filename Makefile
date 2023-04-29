@@ -17,5 +17,5 @@ run: version
 	./bbs-go
 
 push:
-	git tag -m "${PROJECT_VERSION}" "${PROJECT_VERSION}"
+	git tag -m "v${PROJECT_VERSION}" "v${PROJECT_VERSION}"
 	git push --follow-tags

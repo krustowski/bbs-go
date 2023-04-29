@@ -17,6 +17,11 @@ var cmds = []command{
 		producer: danceProducer,
 	},
 	{
+		name: "news",
+		description: "list news",
+		producer: newsProducer,
+	},
+	{
 		name: "help",
 		description: "list commands",
 		producer: helpProducer,

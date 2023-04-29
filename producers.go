@@ -5,6 +5,10 @@ import (
 	"github.com/reiver/go-telnet/telsh"
 )
 
+func newsProducer(ctx telnet.Context, name string, args ...string) telsh.Handler {
+	return telsh.PromoteHandlerFunc(newsHandler)
+}
+
 func helpProducer(ctx telnet.Context, name string, args ...string) telsh.Handler {
 	return telsh.PromoteHandlerFunc(helpHandler)
 }
