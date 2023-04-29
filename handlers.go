@@ -11,7 +11,16 @@ import (
 	"net/http"
 	"os"
 	"time"
+	"unicode"
+
+	"golang.org/x/text/transform"
+	"golang.org/x/text/unicode/norm"
 )
+
+// https://stackoverflow.com/a/26722698
+func isMn(r rune) bool {
+    return unicode.Is(unicode.Mn, r) // Mn: nonspacing marks
+}
 
 func newsHandler(stdin io.ReadCloser, stdout io.WriteCloser, stderr io.WriteCloser, args ...string) error {
 	var url string = "http://swapi.savla.su/news/krusty/"
@@ -56,9 +65,14 @@ func newsHandler(stdin io.ReadCloser, stdout io.WriteCloser, stderr io.WriteClos
 			break
 		}
 
-		oi.LongWriteString(stdout, fmt.Sprintf("%s\n\r", item.Title))
+
+		t := transform.Chain(norm.NFD, transform.RemoveFunc(isMn), norm.NFC)
+		title, _, _ := transform.String(t, item.Title)
+		perex, _, _ := transform.String(t, item.Perex)
+
+		oi.LongWriteString(stdout, fmt.Sprintf("%s\n\r", title))
 		oi.LongWriteString(stdout, fmt.Sprintf("[ %s / %s ]\n\r\n\r", item.PubDate, item.Server))
-		oi.LongWriteString(stdout, fmt.Sprintf("%s\n\r\n\r", item.Perex))
+		oi.LongWriteString(stdout, fmt.Sprintf("%s\n\r\n\r", perex))
 		oi.LongWriteString(stdout, fmt.Sprintf("--------------------------------------------\n\r\n\r"))
 	}
 	return nil
