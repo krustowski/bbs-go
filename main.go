@@ -46,6 +46,8 @@ telnet ` + host + ` ` + port + `
 		shellHandler.Register(cmd.name, telsh.ProducerFunc(commandProducer))
 	}
 
+	shellHandler.Register("help", telsh.Help(shellHandler))
+
 	// construct a server
 	server := &telnet.Server{
 		Addr: host + ":" + port,

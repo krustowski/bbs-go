@@ -78,8 +78,12 @@ func newsHandler(stdin io.ReadCloser, stdout io.WriteCloser, stderr io.WriteClos
 	return nil
 }
 
+/*
+ *  helpHandler()
+ *  currently not used due to the circle/cycle reference 
+ */
 func helpHandler(stdin io.ReadCloser, stdout io.WriteCloser, stderr io.WriteCloser, args ...string) error {
-	/*for _, cmd := range cmds {
+	/*for _, cmd := range commands {
 		oi.LongWriteString(stdout, "\n\r   " + cmd.name + " - " + cmd.description)
 	}*/
 

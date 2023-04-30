@@ -22,13 +22,9 @@ var cmds = []command{
 		producer: newsProducer,
 	},
 	{
-		name: "help",
-		description: "list commands",
-		producer: helpProducer,
-	},
-	{
 		name: "ver",
 		description: "print project version",
 		producer: versionProducer,
 	},
 }
+
