@@ -1,5 +1,10 @@
 package main
 
+/*
+ *  news to news item item JSON stack
+ *
+ */
+
 type News struct {
 	News []NewsItem `json:"news"`
 }
