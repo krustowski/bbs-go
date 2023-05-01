@@ -9,10 +9,10 @@ import (
 )
 
 var (
-	host string
-	port string
+	host         string
+	port         string
 	shellHandler *telsh.ShellHandler = telsh.NewShellHandler()
-	version string
+	version      string
 )
 
 func main() {
@@ -50,9 +50,10 @@ telnet ` + host + ` ` + port + `
 
 	// construct a server
 	server := &telnet.Server{
-		Addr: host + ":" + port,
+		//Addr: host + ":" + port,
+		Addr:    ":" + port,
 		Handler: shellHandler,
-		Logger: logger{},
+		Logger:  logger{},
 	}
 
 	// serve the telnet service
@@ -60,4 +61,3 @@ telnet ` + host + ` ` + port + `
 		panic(err)
 	}
 }
-

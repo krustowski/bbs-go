@@ -5,6 +5,8 @@
 include .env.example
 -include .env
 
+APP_NAME?=${PROJECT_NAME}
+
 export
 
 all: run
@@ -19,3 +21,6 @@ run: version
 push:
 	git tag -m "v${PROJECT_VERSION}" "v${PROJECT_VERSION}"
 	git push --follow-tags
+
+docker: version
+	docker compose up -d --build --remove-orphans --force-recreate
