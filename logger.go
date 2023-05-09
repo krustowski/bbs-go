@@ -21,7 +21,8 @@ type Logger interface{
 }
 
 type logger struct{
-	telnet.Logger
+	//telnet.Logger
+	Logger
 }
 
 func (l logger) Debugf(str string, vargs ...interface{}) {
