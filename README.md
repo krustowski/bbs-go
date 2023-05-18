@@ -11,7 +11,7 @@ simple implementation of go-telnet server to a BBS service
                        /____/
 
 savla-dev bbs-go telnet service
-telnet bbs.savla.int 5555
+telnet bbs.n0p.cz 7777
 
 ```
 
@@ -28,7 +28,7 @@ vim .env
 make run
 ```
 
-## system structure
+## system structure (TODO)
 
 + message boards
 + TUI forums
