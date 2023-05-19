@@ -17,18 +17,16 @@ services:
         GOLANG_VERSION: ${GOLANG_VERSION}
         TZ: ${TZ}
     restart: unless-stopped
-    cpus: 0.5
+    environment:
+      PROJECT_VERSION: ${PROJECT_VERSION}
+      SWAPI_TOKEN: ${SWAPI_TOKEN}
+    cpus: 0.2
     dns:
-      - 1.1.1.2
       - 10.4.5.130
       - 1.0.0.2
-    mem_reservation: 512m
+    mem_reservation: 128m
     ports:
       - "${DOCKER_EXTERNAL_PORT}:${DOCKER_INTERNAL_PORT}"
     networks:
       - ${DOCKER_NETWORK_NAME}
-    labels:
-      - "traefik.http.routers.${APP_NAME}.rule=Host(${APP_URLS_TRAEFIK})"
-      - "traefik.http.services.${APP_NAME}.loadbalancer.server.port=${DOCKER_INTERNAL_PORT}"
-      - "traefik.docker.network=${DOCKER_NETWORK_NAME}"
 

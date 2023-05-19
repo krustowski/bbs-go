@@ -1,8 +1,6 @@
 package main
 
 import (
-	"github.com/reiver/go-telnet"
-
 	"log"
 )
 

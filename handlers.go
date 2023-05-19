@@ -73,7 +73,7 @@ func newsHandler(stdin io.ReadCloser, stdout io.WriteCloser, stderr io.WriteClos
 		oi.LongWriteString(stdout, fmt.Sprintf("%s\n\r", title))
 		oi.LongWriteString(stdout, fmt.Sprintf("[ %s / %s ]\n\r\n\r", item.PubDate, item.Server))
 		oi.LongWriteString(stdout, fmt.Sprintf("%s\n\r\n\r", perex))
-		oi.LongWriteString(stdout, fmt.Sprintf("--------------------------------------------\n\r\n\r"))
+		oi.LongWriteString(stdout, fmt.Sprintf("--------------------------------------------\n\n"))
 	}
 	return nil
 }
@@ -83,11 +83,11 @@ func newsHandler(stdin io.ReadCloser, stdout io.WriteCloser, stderr io.WriteClos
  *  currently not used due to the circle/cycle reference 
  */
 func helpHandler(stdin io.ReadCloser, stdout io.WriteCloser, stderr io.WriteCloser, args ...string) error {
-	/*for _, cmd := range commands {
-		oi.LongWriteString(stdout, "\n\r   " + cmd.name + " - " + cmd.description)
-	}*/
+	for _, cmd := range cmds {
+		oi.LongWriteString(stdout, "\n   " + cmd.name + " - " + cmd.description)
+	}
 
-	oi.LongWriteString(stdout, "\r\n")
+	oi.LongWriteString(stdout, "\r\n\r")
 
 	return nil
 }
@@ -107,34 +107,16 @@ func fiveHandler(stdin io.ReadCloser, stdout io.WriteCloser, stderr io.WriteClos
 
 func danceHandler(stdin io.ReadCloser, stdout io.WriteCloser, stderr io.WriteCloser, args ...string) error {
 	for i:=0; i<20; i++ {
-		oi.LongWriteString(stdout, "\r⠋")
+		oi.LongWriteString(stdout, "\r/")
 		time.Sleep(50*time.Millisecond)
 
-		oi.LongWriteString(stdout, "\r⠙")
+		oi.LongWriteString(stdout, "\r-")
 		time.Sleep(50*time.Millisecond)
 
-		oi.LongWriteString(stdout, "\r⠹")
+		oi.LongWriteString(stdout, "\r\\")
 		time.Sleep(50*time.Millisecond)
 
-		oi.LongWriteString(stdout, "\r⠸")
-		time.Sleep(50*time.Millisecond)
-
-		oi.LongWriteString(stdout, "\r⠼")
-		time.Sleep(50*time.Millisecond)
-
-		oi.LongWriteString(stdout, "\r⠴")
-		time.Sleep(50*time.Millisecond)
-
-		oi.LongWriteString(stdout, "\r⠦")
-		time.Sleep(50*time.Millisecond)
-
-		oi.LongWriteString(stdout, "\r⠧")
-		time.Sleep(50*time.Millisecond)
-
-		oi.LongWriteString(stdout, "\r⠇")
-		time.Sleep(50*time.Millisecond)
-
-		oi.LongWriteString(stdout, "\r⠏")
+		oi.LongWriteString(stdout, "\r|")
 		time.Sleep(50*time.Millisecond)
 	}
 	oi.LongWriteString(stdout, "\r \r\n")
