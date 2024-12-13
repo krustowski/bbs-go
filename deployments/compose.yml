@@ -1,15 +1,14 @@
-version: '3.6'
-
 networks:
-  traefik_savla:
+  traefik:
     name: ${DOCKER_NETWORK_NAME}
 
 services:
-  swapp:
+  bbs-go:
     image: ${DOCKER_IMAGE_TAG}
     container_name: ${DOCKER_CONTAINER_NAME}
     build:
-      context: .
+      context: ..
+      dockerfile: build/Dockerfile
       args: 
         APP_NAME: ${APP_NAME}
         LISTEN_ADDR: ${LISTEN_ADDR} 
@@ -28,5 +27,5 @@ services:
     ports:
       - "${DOCKER_EXTERNAL_PORT}:${DOCKER_INTERNAL_PORT}"
     networks:
-      - ${DOCKER_NETWORK_NAME}
+      - traefik
 

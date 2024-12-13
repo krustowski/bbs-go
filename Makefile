@@ -5,7 +5,8 @@
 include .env.example
 -include .env
 
-APP_NAME?=${PROJECT_NAME}
+APP_NAME	?= ${PROJECT_NAME}
+COMPOSE_FILE	?= deployments/compose.yml
 
 export
 
@@ -23,4 +24,4 @@ push:
 	git push --follow-tags
 
 docker: version
-	docker compose up -d --build --remove-orphans --force-recreate
+	docker compose -f ${COMPOSE_FILE} up -d --build --remove-orphans --force-recreate
