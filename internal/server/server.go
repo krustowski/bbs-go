@@ -187,11 +187,19 @@ func (s *Server) listen() {
 			}
 
 			// Set the conn deadline.
-			conn.SetDeadline(time.Now().Add(ConnectionTimeout))
+			//conn.SetDeadline(time.Now().Add(ConnectionTimeout))
 
 			// Handle the connectiopn in a new goroutine.
-			//s.wg.Add(1)
-			//go d.handle(conn)
+			// --> internal/server/handler.go
+			handler := &Handler{
+				done:   s.done,
+				conn:   conn,
+				output: s.outputTarget,
+				wg:     &s.wg,
+			}
+
+			s.wg.Add(1)
+			go handler.Handle()
 		}
 	}()
 

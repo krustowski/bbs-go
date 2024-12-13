@@ -7,16 +7,16 @@ import (
 )
 
 const (
-	ENV_DEBUG string = "DEBUG"
-        ENV_HOST string = "LISTEN_ADDR"
-        ENV_PORT string = "LISTEN_PORT"
-        ENV_VERSION string = "PROJECT_VERSION"
+	ENV_DEBUG   string = "DEBUG"
+	ENV_HOST    string = "LISTEN_ADDR"
+	ENV_PORT    string = "LISTEN_PORT"
+	ENV_VERSION string = "PROJECT_VERSION"
 )
 
 const (
-	defaultDebug bool = false
-	defaultHost string = "localhost"
-	defaultPort int = 5555
+	defaultDebug bool   = false
+	defaultHost  string = "localhost"
+	defaultPort  int    = 5555
 )
 
 var (

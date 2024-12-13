@@ -20,7 +20,7 @@ fmt:
 
 run: version
 	@go build -o bin/ ./cmd/bbs-go/
-	@bin/bbs-go
+	@bin/bbs-go -debug
 
 push:
 	@git tag -m "v${PROJECT_VERSION}" "v${PROJECT_VERSION}"
