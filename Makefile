@@ -16,7 +16,7 @@ version:
 	sed -i "s|^\(PROJECT_VERSION\).*|\1=${PROJECT_VERSION}|" .env.example
 
 run: version
-	go build bbs-go
+	go build -o bbs-go ./cmd/bbs-go/
 	./bbs-go
 
 push:
