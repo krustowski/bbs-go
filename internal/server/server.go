@@ -112,13 +112,13 @@ func (s *Server) init() {
 	}
 
 	s.once.Do(func() {
-		s.logf("*** Initializing new Server instance...")
-
-		s.done = make(chan struct{})
-
 		if s.outputTarget == nil {
 			s.outputTarget = os.Stdout
 		}
+
+		s.logf("*** Initializing new Server instance...")
+
+		s.done = make(chan struct{})
 
 		// Run the TCP listener.
 		s.wg.Add(1)
@@ -170,8 +170,8 @@ func (s *Server) listen() {
 		l.Close()
 	}()
 
-	s.logf("*** Listening on port TCP/%d...", config.Port)
 	s.logf("%s", WelcomeMessage)
+	s.logf("*** Listening on port TCP/%d...", config.Port)
 
 	go func() {
 		for {

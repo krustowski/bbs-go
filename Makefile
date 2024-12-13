@@ -13,18 +13,18 @@ export
 all: run
 
 version:
-	sed -i "s|^\(PROJECT_VERSION\).*|\1=${PROJECT_VERSION}|" .env.example
+	@sed -i "s|^\(PROJECT_VERSION\).*|\1=${PROJECT_VERSION}|" .env.example
 
 fmt:
 	@gofmt -w -s .
 
 run: version
-	go build -o bbs-go ./cmd/bbs-go/
-	./bbs-go
+	@go build -o bin/ ./cmd/bbs-go/
+	@bin/bbs-go
 
 push:
-	git tag -m "v${PROJECT_VERSION}" "v${PROJECT_VERSION}"
-	git push --follow-tags
+	@git tag -m "v${PROJECT_VERSION}" "v${PROJECT_VERSION}"
+	@git push --follow-tags
 
 docker: version
-	docker compose -f ${COMPOSE_FILE} up -d --build --remove-orphans --force-recreate
+	@docker compose -f ${COMPOSE_FILE} up -d --build --remove-orphans --force-recreate
