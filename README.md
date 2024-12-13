@@ -1,30 +1,42 @@
-# bbs-go (go 1.20)
+# bbs-go
 
-simple implementation of go-telnet server to a BBS service
+A tiny TCP server implementing a basic Buletin Board Service. 
 
 ```
-    __    __
-   / /_  / /_  _____      ____  ____
-  / __ \/ __ \/ ___/_____/ __ \/ __ \
- / /_/ / /_/ (__  )_____/ /_/ / /_/ /
-/_.___/_.___/____/      \__, /\____/
-                       /____/
+$ telnet localhost 5555
+```
 
-savla-dev bbs-go telnet service
-telnet bbs.n0p.cz 7777
+```
++---------------------------------------+
+|     __    __                          |
+|    / /_  / /_  _____      ____  ____  |
+|   / __ \/ __ \/ ___/_____/ __ \/ __ \ |
+|  / /_/ / /_/ (__  )_____/ /_/ / /_/ / |
+| /_.___/_.___/____/      \__, /\____/  |
+|                        /____/         |
+|                                       |
++---------------------------------------+
 
+vxn-dev bbs-go service (0.6.0)
+telnet localhost 5555
+
+> test
+*** Invalid command
+
+> exit
+*** Bye
 ```
 
 ## build and run
 
 ```
-# copy example dotenv file
+# Copy example dotenv file
 cp .env.example .env
 
-# edit some vars
+# Edit some vars
 vim .env
 
-# apply settings, build the binary and run it with env vars exported
+# Apply settings, build the binary and run it with env vars exported
 make run
 ```
 
@@ -34,3 +46,4 @@ make run
 + TUI forums
 + online games
 + user administration 
+
