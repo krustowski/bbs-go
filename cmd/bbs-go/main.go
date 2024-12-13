@@ -1,68 +1,55 @@
 package main
 
 import (
-	"log"
+	"context"
+	"fmt"
 	"os"
+	"os/signal"
+	"syscall"
 
-	"github.com/reiver/go-telnet"
-	"github.com/reiver/go-telnet/telsh"
-
-	"go.vxn.dev/bbs-go/pkg/shell"
+	"go.vxn.dev/bbs-go/internal/server"
 )
 
-var (
-	host         string
-	port         string
-	shellHandler *telsh.ShellHandler = telsh.NewShellHandler()
-	version      string
-)
+var signalsToHandle = []os.Signal{syscall.SIGHUP, syscall.SIGINT, syscall.SIGTERM}
 
 func main() {
-	host = os.Getenv("LISTEN_ADDR")
-	port = os.Getenv("LISTEN_PORT")
-	version = os.Getenv("PROJECT_VERSION")
 
-	log.Printf(" starting bbs-go telnet service (" + version + ")...")
+	// Create a cancellable context.
+	ctx, cancel := context.WithCancel(context.Background())
+	defer cancel()
 
-	// override defaults
-	shellHandler.Prompt = "$ "
-	shellHandler.ExitMessage = "\n\rGoodbye!\n\r"
-	shellHandler.WelcomeMessage = `
-    __    __
-   / /_  / /_  _____      ____  ____
-  / __ \/ __ \/ ___/_____/ __ \/ __ \
- / /_/ / /_/ (__  )_____/ /_/ / /_/ /
-/_.___/_.___/____/      \__, /\____/
-                       /____/
+	// Create new server.
+	s := server.NewServer(ctx)
 
-savla-dev bbs-go telnet service (` + version + `)
-telnet ` + host + ` ` + port + `
+	// Handle a graceful shutdown/configuration reload.
+	sigChan := make(chan os.Signal, 1)
+	signal.Notify(sigChan, signalsToHandle...)
 
-`
-	log.Printf(shellHandler.WelcomeMessage)
+	go func() {
+		for {
+			// Fetch the signal to determine the type.
+			sig := <-sigChan
 
-	// loop over commands from commands.go
-	for _, cmd := range shell.Cmds {
-		commandProducer := telsh.ProducerFunc(cmd.Producer)
+			// Handle SIGHUP => configuration reload.
+			if sig == syscall.SIGHUP {
+				//s.Reload()
+				continue
+			}
 
-		shellHandler.Register(cmd.Name, telsh.ProducerFunc(commandProducer))
+			// Handle other signals => try graceful shutdown.
+			signal.Stop(sigChan)
+			cancel()
+			break
+		}
+	}()
+
+	// Run the program as daemon.
+	if err := s.Run(); err != nil {
+		fmt.Fprintf(os.Stderr, "%s\n", err.Error())
+		os.Exit(1)
 	}
 
-	helpCommandProducer := telsh.ProducerFunc(shell.HelpProducer)
-	shellHandler.Register("help", telsh.ProducerFunc(helpCommandProducer))
-
-	//shellHandler.Register("help", telsh.Help(shellHandler))
-
-	// construct a server
-	server := &telnet.Server{
-		//Addr: host + ":" + port,
-		Addr:    ":" + port,
-		Handler: shellHandler,
-		Logger:  shell.Logger{},
-	}
-
-	// serve the telnet service
-	if err := server.ListenAndServe(); nil != err {
-		panic(err)
-	}
+	// Program's very exitpoint.
+	fmt.Fprintf(os.Stdout, "Program exit.\n")
+	os.Exit(0)
 }
