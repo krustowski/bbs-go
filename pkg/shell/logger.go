@@ -1,10 +1,10 @@
-package main
+package shell
 
 import (
 	"log"
 )
 
-type Logger interface{
+type LoggerInterface interface {
 	Debug(...interface{})
 	Debugf(string, ...interface{})
 
@@ -18,23 +18,23 @@ type Logger interface{
 	Warnf(string, ...interface{})
 }
 
-type logger struct{
+type Logger struct {
 	//telnet.Logger
-	Logger
+	LoggerInterface
 }
 
-func (l logger) Debugf(str string, vargs ...interface{}) {
+func (l Logger) Debugf(str string, vargs ...interface{}) {
 	log.Printf(str, vargs...)
 }
 
-func (l logger) Errorf(str string, vargs ...interface{}) {
+func (l Logger) Errorf(str string, vargs ...interface{}) {
 	log.Printf(str, vargs...)
 }
 
-func (l logger) Tracef(str string, vargs ...interface{}) {
+func (l Logger) Tracef(str string, vargs ...interface{}) {
 	log.Printf(str, vargs...)
 }
 
-func (l logger) Warnf(str string, vargs ...interface{}) {
+func (l Logger) Warnf(str string, vargs ...interface{}) {
 	log.Printf(str, vargs...)
 }

@@ -1,4 +1,4 @@
-package main
+package shell
 
 import (
 	"github.com/reiver/go-oi"
@@ -19,10 +19,10 @@ import (
 
 // https://stackoverflow.com/a/26722698
 func isMn(r rune) bool {
-    return unicode.Is(unicode.Mn, r) // Mn: nonspacing marks
+	return unicode.Is(unicode.Mn, r) // Mn: nonspacing marks
 }
 
-func newsHandler(stdin io.ReadCloser, stdout io.WriteCloser, stderr io.WriteCloser, args ...string) error {
+func NewsHandler(stdin io.ReadCloser, stdout io.WriteCloser, stderr io.WriteCloser, args ...string) error {
 	var url string = "http://swapi.savla.su/news/krusty/"
 
 	// try URL
@@ -58,13 +58,12 @@ func newsHandler(stdin io.ReadCloser, stdout io.WriteCloser, stderr io.WriteClos
 		return err
 	}
 
-	// loop over news items 
+	// loop over news items
 	for i, item := range newsStream.News {
 		// hardcoded paging limit for VTxxx terminals
 		if i > 4 {
 			break
 		}
-
 
 		t := transform.Chain(norm.NFD, transform.RemoveFunc(isMn), norm.NFC)
 		title, _, _ := transform.String(t, item.Title)
@@ -80,11 +79,11 @@ func newsHandler(stdin io.ReadCloser, stdout io.WriteCloser, stderr io.WriteClos
 
 /*
  *  helpHandler()
- *  currently not used due to the circle/cycle reference 
+ *  currently not used due to the circle/cycle reference
  */
-func helpHandler(stdin io.ReadCloser, stdout io.WriteCloser, stderr io.WriteCloser, args ...string) error {
-	for _, cmd := range cmds {
-		oi.LongWriteString(stdout, "\n   " + cmd.name + " - " + cmd.description)
+func HelpHandler(stdin io.ReadCloser, stdout io.WriteCloser, stderr io.WriteCloser, args ...string) error {
+	for _, cmd := range Cmds {
+		oi.LongWriteString(stdout, "\n   "+cmd.Name+" - "+cmd.Description)
 	}
 
 	oi.LongWriteString(stdout, "\r\n\r")
@@ -92,35 +91,34 @@ func helpHandler(stdin io.ReadCloser, stdout io.WriteCloser, stderr io.WriteClos
 	return nil
 }
 
-func versionHandler(stdin io.ReadCloser, stdout io.WriteCloser, stderr io.WriteCloser, args ...string) error {
+func VersionHandler(stdin io.ReadCloser, stdout io.WriteCloser, stderr io.WriteCloser, args ...string) error {
 	oi.LongWriteString(stdout, "\n\rbbs-go telnet service")
-	oi.LongWriteString(stdout, "\n\rversion: " + version + "\n\r\r\n")
+	//oi.LongWriteString(stdout, "\n\rversion: " + version + "\n\r\r\n")
 
 	return nil
 }
 
-func fiveHandler(stdin io.ReadCloser, stdout io.WriteCloser, stderr io.WriteCloser, args ...string) error {
+func FiveHandler(stdin io.ReadCloser, stdout io.WriteCloser, stderr io.WriteCloser, args ...string) error {
 	oi.LongWriteString(stdout, "The number FIVE looks like this: 5\r\n")
 
 	return nil
 }
 
-func danceHandler(stdin io.ReadCloser, stdout io.WriteCloser, stderr io.WriteCloser, args ...string) error {
-	for i:=0; i<20; i++ {
+func DanceHandler(stdin io.ReadCloser, stdout io.WriteCloser, stderr io.WriteCloser, args ...string) error {
+	for i := 0; i < 20; i++ {
 		oi.LongWriteString(stdout, "\r/")
-		time.Sleep(50*time.Millisecond)
+		time.Sleep(50 * time.Millisecond)
 
 		oi.LongWriteString(stdout, "\r-")
-		time.Sleep(50*time.Millisecond)
+		time.Sleep(50 * time.Millisecond)
 
 		oi.LongWriteString(stdout, "\r\\")
-		time.Sleep(50*time.Millisecond)
+		time.Sleep(50 * time.Millisecond)
 
 		oi.LongWriteString(stdout, "\r|")
-		time.Sleep(50*time.Millisecond)
+		time.Sleep(50 * time.Millisecond)
 	}
 	oi.LongWriteString(stdout, "\r \r\n")
 
 	return nil
 }
-

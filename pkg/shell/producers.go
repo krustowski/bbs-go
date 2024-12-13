@@ -1,27 +1,26 @@
-package main
+package shell
 
 import (
 	"github.com/reiver/go-telnet"
 	"github.com/reiver/go-telnet/telsh"
 )
 
-func newsProducer(ctx telnet.Context, name string, args ...string) telsh.Handler {
-	return telsh.PromoteHandlerFunc(newsHandler)
+func NewsProducer(ctx telnet.Context, name string, args ...string) telsh.Handler {
+	return telsh.PromoteHandlerFunc(NewsHandler)
 }
 
-func helpProducer(ctx telnet.Context, name string, args ...string) telsh.Handler {
-	return telsh.PromoteHandlerFunc(helpHandler)
+func HelpProducer(ctx telnet.Context, name string, args ...string) telsh.Handler {
+	return telsh.PromoteHandlerFunc(HelpHandler)
 }
 
-func versionProducer(ctx telnet.Context, name string, args ...string) telsh.Handler {
-	return telsh.PromoteHandlerFunc(versionHandler)
+func VersionProducer(ctx telnet.Context, name string, args ...string) telsh.Handler {
+	return telsh.PromoteHandlerFunc(VersionHandler)
 }
 
-func fiveProducer(ctx telnet.Context, name string, args ...string) telsh.Handler {
-	return telsh.PromoteHandlerFunc(fiveHandler)
+func FiveProducer(ctx telnet.Context, name string, args ...string) telsh.Handler {
+	return telsh.PromoteHandlerFunc(FiveHandler)
 }
 
-func danceProducer(ctx telnet.Context, name string, args ...string) telsh.Handler {
-	return telsh.PromoteHandlerFunc(danceHandler)
+func DanceProducer(ctx telnet.Context, name string, args ...string) telsh.Handler {
+	return telsh.PromoteHandlerFunc(DanceHandler)
 }
-

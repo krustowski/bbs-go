@@ -1,4 +1,4 @@
-package main
+package shell
 
 /*
  *  news to news item item JSON stack

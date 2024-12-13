@@ -1,11 +1,13 @@
 package main
 
 import (
+	"log"
+	"os"
+
 	"github.com/reiver/go-telnet"
 	"github.com/reiver/go-telnet/telsh"
 
-	"log"
-	"os"
+	"go.vxn.dev/bbs-go/pkg/shell"
 )
 
 var (
@@ -40,13 +42,13 @@ telnet ` + host + ` ` + port + `
 	log.Printf(shellHandler.WelcomeMessage)
 
 	// loop over commands from commands.go
-	for _, cmd := range cmds {
-		commandProducer := telsh.ProducerFunc(cmd.producer)
+	for _, cmd := range shell.Cmds {
+		commandProducer := telsh.ProducerFunc(cmd.Producer)
 
-		shellHandler.Register(cmd.name, telsh.ProducerFunc(commandProducer))
+		shellHandler.Register(cmd.Name, telsh.ProducerFunc(commandProducer))
 	}
 
-	helpCommandProducer := telsh.ProducerFunc(helpProducer)
+	helpCommandProducer := telsh.ProducerFunc(shell.HelpProducer)
 	shellHandler.Register("help", telsh.ProducerFunc(helpCommandProducer))
 
 	//shellHandler.Register("help", telsh.Help(shellHandler))
@@ -56,7 +58,7 @@ telnet ` + host + ` ` + port + `
 		//Addr: host + ":" + port,
 		Addr:    ":" + port,
 		Handler: shellHandler,
-		Logger:  logger{},
+		Logger:  shell.Logger{},
 	}
 
 	// serve the telnet service

@@ -1,30 +1,29 @@
-package main
+package shell
 
 import (
 	"github.com/reiver/go-telnet/telsh"
 )
 
-type command struct {
-	name		string
-	description	string
-	producer	telsh.ProducerFunc
+type Command struct {
+	Name        string
+	Description string
+	Producer    telsh.ProducerFunc
 }
 
-var cmds = []command{
+var Cmds = []Command{
 	{
-		name: "dance",
-		description: "ASCII dance experiment",
-		producer: danceProducer,
+		Name:        "dance",
+		Description: "ASCII dance experiment",
+		Producer:    DanceProducer,
 	},
 	{
-		name: "news",
-		description: "list news",
-		producer: newsProducer,
+		Name:        "news",
+		Description: "list news",
+		Producer:    NewsProducer,
 	},
 	{
-		name: "ver",
-		description: "print project version",
-		producer: versionProducer,
+		Name:        "ver",
+		Description: "print project version",
+		Producer:    VersionProducer,
 	},
 }
-
