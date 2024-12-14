@@ -140,8 +140,8 @@ func (h *Handler) route(pktChan chan string, errChan chan error) {
 			return
 
 		default:
+			// Preprocess the string for switch.
 			pkt := <-pktChan
-
 			parts := strings.Split(pkt, "\n")
 
 			switch strings.TrimSpace(parts[0]) {
@@ -150,6 +150,11 @@ func (h *Handler) route(pktChan chan string, errChan chan error) {
 			case "exit":
 				h.conn.Write([]byte("*** Bye\n\n"))
 				return
+
+			case "help":
+				h.conn.Write([]byte("*** Commands\n"))
+				h.conn.Write([]byte("    exit --- quit the session\n"))
+				h.conn.Write([]byte("\n"))
 
 			default:
 				h.debugf("Invalid command")
