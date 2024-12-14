@@ -158,7 +158,7 @@ func (h *Handler) route(pktChan chan string, errChan chan error) {
 
 			default:
 				h.debugf("Invalid command")
-				h.conn.Write([]byte("*** Invalid command\n\n"))
+				h.conn.Write([]byte("*** Invalid command, try 'help'\n\n"))
 			}
 
 			h.conn.Write([]byte("> "))
